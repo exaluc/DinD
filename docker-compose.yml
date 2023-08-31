@@ -1,0 +1,8 @@
+version: '3'
+services:
+  dind-service:
+    build: docker/
+    image: dind-almalinux8
+    privileged: true
+    volumes:
+      - /var/lib/docker

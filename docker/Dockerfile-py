@@ -1,0 +1,24 @@
+FROM almalinux:8
+
+LABEL fr.erz.author="Lucian BLETAN" \
+      description="DinD AlmaLinux 8 Python3.9.1"
+
+RUN dnf -y update && \
+    dnf -y groupinstall 'development tools' && \
+    dnf -y install wget openssl-devel bzip2-devel libffi-devel && \
+    dnf -y install dnf-plugins-core && \
+    dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo && \
+    dnf -y install docker-ce docker-ce-cli containerd.io python3-pip && \
+    dnf clean all
+    
+RUN curl https://www.python.org/ftp/python/3.9.1/Python-3.9.1.tgz -O && \
+    tar -xvf Python-3.9.1.tgz && \
+    cd Python-3.9.1 && \
+    ./configure --enable-optimizations && \
+    make install && \
+    cd .. && rm -rf Python-3.9.1 Python-3.9.1.tgz
+
+RUN curl -L "https://github.com/docker/compose/releases/download/v2.20.3/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose && \
+    chmod +x /usr/local/bin/docker-compose
+
+ENTRYPOINT ["dockerd"]
